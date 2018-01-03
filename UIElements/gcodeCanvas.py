@@ -250,8 +250,9 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
                     self.line = Line(points = (), width = 1, group = 'gcode')
                     self.addPoint(xTarget , yTarget)
                 elif command == 'Next':
-                    print "the next command was seen!"
-                    Line(points = (self.xPosition , self.yPosition , xTarget, yTarget), width = 4, group = 'temp')
+                    Color(0,1,0)
+                    arrowPoints = (self.xPosition , self.yPosition , xTarget, yTarget)
+                    Line(points = arrowPoints, width = .3, group = 'temp')
                 else:
                     self.addPoint(xTarget , yTarget)
                 
