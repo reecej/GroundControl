@@ -51,6 +51,7 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
         self.data.bind(gcode = self.updateGcode)
         self.data.bind(gcodeShift = self.reloadGcode)
         self.data.bind(gcodeFile = self.centerCanvasAndReloadGcode)
+        self.data.bind(gcodeIndex = self.on_line_change)
         
         global_variables._keyboard = Window.request_keyboard(self._keyboard_closed, self)
         global_variables._keyboard.bind(on_key_down=self._on_keyboard_down)
@@ -248,6 +249,9 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
                     #start a new straight line from the end of the dashed line
                     self.line = Line(points = (), width = 1, group = 'gcode')
                     self.addPoint(xTarget , yTarget)
+                elif command == 'Next':
+                    print "the next command was seen!"
+                    Line(points = (self.xPosition , self.yPosition , xTarget, yTarget), width = 4, group = 'temp')
                 else:
                     self.addPoint(xTarget , yTarget)
                 
@@ -529,4 +533,14 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
             self.data.message_queue.put("Message: " + errorText)
         
         self.callBackMechanism(self.updateGcode)
+    
+    def on_line_change(self, *args):
+        '''
         
+        This function runs every time the index of the currently opened gcode changes
+        
+        '''
+        self.scatterObject.canvas.remove_group('temp')
+        self.drawLine(self.data.gcode[self.data.gcodeIndex - 1], 'Next')
+        print self.data.gcodeIndex
+        print self.data.gcode[self.data.gcodeIndex]
