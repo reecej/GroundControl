@@ -251,8 +251,11 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
                     self.addPoint(xTarget , yTarget)
                 elif command == 'Next':
                     Color(0,1,0)
-                    arrowPoints = (self.xPosition , self.yPosition , xTarget, yTarget)
-                    Line(points = arrowPoints, width = .3, group = 'temp')
+                    lineSlope = (self.yPosition - yTarget)/(self.xPosition - xTarget)
+                    arrowTipX1 = xTarget + 20*lineSlope
+                    arrowTipY1 = yTarget + 20*(-1/lineSlope)
+                    arrowPoints = (self.xPosition , self.yPosition , xTarget, yTarget, arrowTipX1, arrowTipY1)
+                    Line(points = arrowPoints, width = 1.2, group = 'temp')
                 else:
                     self.addPoint(xTarget , yTarget)
                 
@@ -542,6 +545,6 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
         
         '''
         self.scatterObject.canvas.remove_group('temp')
-        self.drawLine(self.data.gcode[self.data.gcodeIndex - 1], 'Next')
+        self.drawLine(self.data.gcode[self.data.gcodeIndex + 1], 'Next')
         print self.data.gcodeIndex
         print self.data.gcode[self.data.gcodeIndex]
