@@ -19,6 +19,7 @@ from UIElements.modernMenu                   import ModernMenu
 import re
 import math
 import global_variables
+import sys
 
 class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
     
@@ -251,9 +252,14 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
                     self.addPoint(xTarget , yTarget)
                 elif command == 'Next':
                     Color(0,1,0)
-                    lineSlope = (self.yPosition - yTarget)/(self.xPosition - xTarget)
-                    arrowTipX1 = xTarget + 20*lineSlope
-                    arrowTipY1 = yTarget + 20*(-1/lineSlope)
+                    lineSlope = (self.yPosition - yTarget)/(self.xPosition - xTarget+.00001)
+                    print "lineSlope: "
+                    print lineSlope
+                    lineAngle = math.arctan(lineSlope)
+                    print "lineAngle: "
+                    print lineAngle
+                    arrowTipX1 = xTarget + 20
+                    arrowTipY1 = yTarget + 20
                     arrowPoints = (self.xPosition , self.yPosition , xTarget, yTarget, arrowTipX1, arrowTipY1)
                     Line(points = arrowPoints, width = 1.2, group = 'temp')
                 else:
@@ -277,6 +283,7 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
             self.zPosition = zTarget
         except:
             print "Unable to draw line on screen: " + gCodeLine
+            print "Error info:", sys.exc_info()[0]
     
     def drawArc(self,gCodeLine,command):
         '''
